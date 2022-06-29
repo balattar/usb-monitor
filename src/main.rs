@@ -36,13 +36,16 @@ fn main() {
         api.refresh_devices();
 
         let mut devices: HashSet<&str> = HashSet::new();
-        let mut num_devices = 0;
-        for device_info in api.device_list() {
+        let mut device_list = api.device_list();
+        for device_info in device_list.by_ref().into_iter() {
             devices.insert(device_info.product_string().unwrap_or("Unknown"));
-            num_devices += 1;
         }
 
-        info!("Iteration {}: Found {} devices.", iteration, num_devices);
+        info!(
+            "Iteration {}: Found {} devices.",
+            iteration,
+            device_list.by_ref().count(),
+        );
 
         for device in &devices {
             if *device != "" {
